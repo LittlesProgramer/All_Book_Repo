@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Controller
@@ -41,7 +42,23 @@ public class DesignTacoController {
     }
 
     @GetMapping
-    public void showDesignForm(Model model){
+    public String showDesignForm(Model model){
+        List<Ingredient> ingredientList = new ArrayList<>();
+        ingredientRepo.findAll().forEach((i)->{
+            ingredientList.add(i);
+        });
+        Ingredient.Type types[] = Ingredient.Type.values();
 
+        for(int t = 0 ; t < types.length ; t++){
+            model.addAttribute(types[t].name().toLowerCase(),filterByType(types[t],ingredientList));
+        }
+
+        return "design";
+    }
+
+    private List<Ingredient> filterByType(Ingredient.Type type, List<Ingredient> ingredientList) {
+        return ingredientList.stream().filter((t)->{
+            return t.getType().name().equals(type.name());
+        }).collect(Collectors.toList());
     }
 }
