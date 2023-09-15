@@ -1,5 +1,7 @@
 package my.app.com.MyProject04.domain;
 
+import lombok.Data;
+
 import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
@@ -7,6 +9,7 @@ import javax.validation.constraints.*;
 import javax.validation.constraints.Size;
 
 @Entity
+@Data
 public class Taco {
 
     @Id
