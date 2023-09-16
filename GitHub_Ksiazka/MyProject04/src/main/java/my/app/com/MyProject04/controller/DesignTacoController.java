@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.ArrayList;
@@ -54,6 +55,16 @@ public class DesignTacoController {
         }
 
         return "design";
+    }
+
+    @PostMapping
+    public String redirectToHome(Taco taco,Order order){
+        Taco savedTaco = tacoRepo.save(taco);
+        order.addDesignTacoToOrder(savedTaco);
+
+        log.info("taco = "+taco+" order = "+order);
+
+        return "redirect:/";
     }
 
     private List<Ingredient> filterByType(Ingredient.Type type, List<Ingredient> ingredientList) {
