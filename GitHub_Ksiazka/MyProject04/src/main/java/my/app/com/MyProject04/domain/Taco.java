@@ -1,6 +1,9 @@
 package my.app.com.MyProject04.domain;
 
 import lombok.Data;
+import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.ScopedProxyMode;
+import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
 import java.util.Date;

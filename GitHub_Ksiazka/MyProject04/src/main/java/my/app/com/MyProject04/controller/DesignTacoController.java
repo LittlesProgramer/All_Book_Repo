@@ -7,12 +7,11 @@ import my.app.com.MyProject04.domain.Ingredient;
 import my.app.com.MyProject04.domain.Order;
 import my.app.com.MyProject04.domain.Taco;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +20,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @Controller
 @RequestMapping(path = "/design")
+@SessionAttributes(names = {"order"})
 public class DesignTacoController {
 
     private IngredientRepository ingredientRepo;
@@ -33,9 +33,7 @@ public class DesignTacoController {
     }
 
     @ModelAttribute(name = "design")
-    public Taco taco(){
-        return new Taco();
-    }
+    public Taco taco(){return new Taco();}
 
     @ModelAttribute(name = "order")
     public Order order(){
@@ -61,10 +59,9 @@ public class DesignTacoController {
     public String redirectToHome(Taco taco,Order order){
         Taco savedTaco = tacoRepo.save(taco);
         order.addDesignTacoToOrder(savedTaco);
-
         log.info("taco = "+taco+" order = "+order);
 
-        return "redirect:/";
+        return "redirect:/orders/current";
     }
 
     private List<Ingredient> filterByType(Ingredient.Type type, List<Ingredient> ingredientList) {
