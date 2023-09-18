@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Order Form</title>
+    <link rel="stylesheet" type="text/css" th:href="@{style.css}">
+</head>
+<body>
+
+  <form method="post" th:object="${order}" th:action="@{/orders}">
+
+    <h1>Order your taco creation</h1>
+
+    <img th:src="@{/images/TacoCloud.png}"/>
+
+    <h3>Your tacos in this order:</h3>
+
+    <ul>
+      <li th:each="taco: ${order.tacos}" >
+        <span th:text="${taco.name}"></span>
+      </li>
+    </ul>
+
+    <span>Do you wont create another taco?Click this link: <a th:href="@{/design}">Link</a></span>
+
+    <h3>Delivery my taco masterpies to...</h3>
+
+    <label for="deliveryName">Insert Name:</label>
+    <input type="text" th:field="*{deliveryName}" id="deliveryName"/>
+    <br/>
+
+    <label for="deliveryStreet">Insert Street:</label>
+    <input type="text" th:field="*{deliveryStreet}" id="deliveryStreet"/>
+    <br/>
+
+    <label for="deliveryCity">Insert City:</label>
+    <input type="text" th:field="*{deliveryCity}" id="deliveryCity"/>
+    <br/>
+
+    <label for="deliveryState">Insert State:</label>
+    <input type="text" th:field="*{deliveryState}" id="deliveryState"/>
+    <br/>
+
+    <label for="deliveryZip">Insert Zip:</label>
+    <input type="text" th:field="*{deliveryZip}" id="deliveryZip">
+    <br/>
+
+    <hr style="color:red"/>
+
+    <label for="ccNumber">Insert credit card number:</label>
+    <input type="text" th:field="*{ccNumber}" id="ccNumber"/>
+    <br/>
+
+    <label for="ccExpiration">Insert credit card expiration:</label>
+    <input type="text" th:field="*{ccExpiration}" id="ccExpiration"/>
+    <br/>
+
+    <label for="ccCVV">Insert credit card cvv number:</label>
+    <input type="text" th:field="*{ccCVV}" id="ccCVV"/>
+    <br/>
+
+    <input type="submit" value="Submit order"/>
+
+  </form>
+
+</body>
+</html>
