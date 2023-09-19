@@ -1,13 +1,18 @@
 package my.app.com.MyProject04.domain;
 
 import lombok.Data;
+import org.springframework.beans.PropertyValue;
+import org.springframework.beans.PropertyValues;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Component;
+import org.springframework.validation.Errors;
+import org.springframework.validation.ValidationUtils;
 
 import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
+import org.springframework.validation.Validator;
 import javax.validation.constraints.*;
 import javax.validation.constraints.Size;
 
@@ -25,7 +30,7 @@ public class Taco {
 
     private Date createAt;
 
-    @Size(min = 1,message = "Taco must have at least one ingredient")
+    @NotNull(message = "Taco must have at least one ingredient")
     @ManyToMany(targetEntity = Ingredient.class)
     private List<Ingredient> ingredients;
 
