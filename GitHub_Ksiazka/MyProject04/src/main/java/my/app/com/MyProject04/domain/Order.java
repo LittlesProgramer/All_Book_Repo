@@ -37,7 +37,7 @@ public class Order implements Serializable {
 
     @CreditCardNumber(message = "Please insert correct Credit Card Number")
     private String ccNumber;
-    @Pattern(regexp="\\d",message = "Please correct the credit card number expiration time")
+    @Pattern(regexp="^(0[1-9]|1[0-2])([\\/])([1-9][0-9])$",message="Must be formatted MM/YY")
     private String ccExpiration;
     @Digits(integer = 3,fraction = 0,message = "Please insert correct cvv number")
     private String ccCVV;
