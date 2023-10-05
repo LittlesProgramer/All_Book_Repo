@@ -10,6 +10,7 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import org.springframework.validation.Validator;
@@ -32,11 +33,13 @@ public class Taco {
 
     @NotNull(message = "Taco must have at least one ingredient")
     @ManyToMany(targetEntity = Ingredient.class)
-    private List<Ingredient> ingredients;
+    private List<Ingredient> ingredients = new ArrayList<>();
 
     @PrePersist
     private void createAt(){
         this.createAt = new Date();
     }
+
+    public void addIngredient(Ingredient ingredient){ this.ingredients.add(ingredient); }
 }
 
