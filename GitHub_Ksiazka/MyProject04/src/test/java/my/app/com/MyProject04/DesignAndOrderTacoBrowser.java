@@ -1,6 +1,7 @@
 package my.app.com.MyProject04;
 
 import java.time.Duration;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -60,6 +61,41 @@ public class DesignAndOrderTacoBrowser {
         assertThat(browser.getCurrentUrl()).isEqualTo(getHomeUrl());
     }
 
+    @Test
+    public void testDesignATacoPage_InvalidOrderInfo() throws Exception {
+        browser.get(getHomeUrl());
+        clickDesignATaco();
+        assertDesignPageElements();
+        buildAndSubmitATaco("Basic Taco", "FLTO", "GRBF", "CHED", "TMTO", "SLSA");
+        submitInvalidOrderForm();
+        fillInAndSubmitOrderForm();
+        assertThat(browser.getCurrentUrl()).isEqualTo(getHomeUrl());
+    }
+
+    private void submitInvalidOrderForm() {
+        Assert.assertEquals(browser.getCurrentUrl(),getOrderUrl());
+        browser.findElement(By.id("deliveryName")).sendKeys("Piotr");
+        browser.findElement(By.id("deliveryStreet")).sendKeys("Pazia");
+        browser.findElement(By.id("deliveryCity")).sendKeys("Wa-wa");
+        browser.findElement(By.id("deliveryState")).sendKeys("pl");
+        browser.findElement(By.id("deliveryZip")).sendKeys("125");
+        browser.findElement(By.id("ccNumber")).sendKeys("000");
+        browser.findElement(By.id("ccExpiration")).sendKeys("12-12");
+        browser.findElement(By.id("ccCVV")).sendKeys("12as");
+        browser.findElement(By.tagName("form")).submit();
+
+        List<WebElement> allValidationErrors = browser.findElements(By.className("validationError"));
+        Assert.assertEquals(allValidationErrors.size(),3);
+
+        List<String> allStringValidationError = getAllValidationErrorInString();
+        assertThat(allStringValidationError.size()).isEqualTo(3);
+        assertThat(allStringValidationError).containsAnyElementsOf(Arrays.asList(
+                "Please insert correct Credit Card Number",
+                "Must be formatted MM/YY",
+                "Please insert correct cvv number")
+        );
+    }
+
     private void submitEmptyOrderForm() {
         Assert.assertEquals(browser.getCurrentUrl(),getOrderUrl());
         browser.findElement(By.id("deliveryName")).sendKeys("");
@@ -75,9 +111,6 @@ public class DesignAndOrderTacoBrowser {
         assertThat(browser.getCurrentUrl()).isEqualTo(getErrorOrder());
 
         List<String> listOfAllValidationErrors = getAllValidationErrorInString();
-        listOfAllValidationErrors.stream().forEach((el)->{
-            System.out.println("el = "+el);
-        });
         assertThat(listOfAllValidationErrors.size()).isEqualTo(9);
         Assert.assertEquals(listOfAllValidationErrors.size(),9);
 
@@ -97,8 +130,6 @@ public class DesignAndOrderTacoBrowser {
 
     private void fillInAndSubmitOrderForm() {
 
-        Assert.assertEquals(browser.getCurrentUrl(),getOrderUrl());
-        assertThat(browser.getCurrentUrl()).isEqualTo(getOrderUrl());
         assertThat(browser.getCurrentUrl()).startsWith(getErrorOrder());
 
         fillField("input#deliveryName","nazwa");
@@ -127,10 +158,6 @@ public class DesignAndOrderTacoBrowser {
 
     private void buildAndSubmitATaco(String tacoName, String... ingredientArgs) {
         assertDesignPageElements();
-
-        for(String el: ingredientArgs){
-            browser.findElement(By.cssSelector("input[value='"+el+"']")).click();
-        }
 
         browser.findElement(By.cssSelector("input[type='text']")).sendKeys(tacoName);
         browser.findElement(By.tagName("button")).submit();
