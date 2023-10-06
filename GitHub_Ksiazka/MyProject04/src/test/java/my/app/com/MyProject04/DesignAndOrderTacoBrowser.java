@@ -2,6 +2,7 @@ package my.app.com.MyProject04;
 
 import java.time.Duration;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -47,6 +48,51 @@ public class DesignAndOrderTacoBrowser {
         buildAndSubmitATaco("Another Taco", "COTO", "CARN", "JACK", "LETC", "SRCR");
         fillInAndSubmitOrderForm();
         Assert.assertEquals(browser.getCurrentUrl(),getHomeUrl());
+    }
+    @Test
+    public void testDesignATacoPage_EmptyOrderInfo(){
+        browser.get(getHomeUrl());
+        clickDesignATaco();
+        assertDesignPageElements();
+        buildAndSubmitATaco("Basic Taco", "FLTO", "GRBF", "CHED", "TMTO", "SLSA");
+        submitEmptyOrderForm();
+        fillInAndSubmitOrderForm();
+        assertThat(browser.getCurrentUrl()).isEqualTo(getHomeUrl());
+    }
+
+    private void submitEmptyOrderForm() {
+        Assert.assertEquals(browser.getCurrentUrl(),getOrderUrl());
+        browser.findElement(By.id("deliveryName")).sendKeys("");
+        browser.findElement(By.id("deliveryStreet")).sendKeys("");
+        browser.findElement(By.id("deliveryCity")).sendKeys("");
+        browser.findElement(By.id("deliveryState")).sendKeys("");
+        browser.findElement(By.id("deliveryZip")).sendKeys("");
+        browser.findElement(By.id("ccNumber")).sendKeys("");
+        browser.findElement(By.id("ccExpiration")).sendKeys("");
+        browser.findElement(By.id("ccCVV")).sendKeys("");
+
+        browser.findElement(By.tagName("form")).submit();
+        assertThat(browser.getCurrentUrl()).isEqualTo(getErrorOrder());
+
+        List<String> listOfAllValidationErrors = getAllValidationErrorInString();
+        listOfAllValidationErrors.stream().forEach((el)->{
+            System.out.println("el = "+el);
+        });
+        assertThat(listOfAllValidationErrors.size()).isEqualTo(9);
+        Assert.assertEquals(listOfAllValidationErrors.size(),9);
+
+        assertThat(listOfAllValidationErrors).containsExactlyInAnyOrderElementsOf(listOfAllValidationErrors);
+        assertThat(listOfAllValidationErrors).containsAll(listOfAllValidationErrors);
+        assertThat(listOfAllValidationErrors).containsExactlyElementsOf(listOfAllValidationErrors);
+        assertThat(listOfAllValidationErrors).containsAnyElementsOf(listOfAllValidationErrors);
+    }
+
+    private List<String> getAllValidationErrorInString() {
+        List<WebElement> validationErrorList = browser.findElements(By.className("validationError"));
+        List<String> allValidationStringErrors = validationErrorList.stream().map((webEl)->{
+            return webEl.getText();
+        }).collect(Collectors.toList());
+        return allValidationStringErrors;
     }
 
     private void fillInAndSubmitOrderForm() {
@@ -152,11 +198,10 @@ public class DesignAndOrderTacoBrowser {
 
     }
 
-
     //help url methods
     public String getHomeUrl(){ return "http://localhost:"+port+"/"; }
     public String getDesignUrl(){ return getHomeUrl()+"design"; }
 
     public String getOrderUrl(){ return getHomeUrl()+"orders/current"; }
-    public String getErrorOrder(){ return getHomeUrl()+"order"; }
+    public String getErrorOrder(){ return getHomeUrl()+"orders"; }
 }
