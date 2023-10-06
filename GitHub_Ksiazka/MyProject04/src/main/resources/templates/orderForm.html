@@ -25,6 +25,10 @@
 
     <h3>Delivery my taco masterpies to...</h3>
 
+    <div th:if="${#fields.hasErrors()}">
+      <span class="validationError">Please correct the problem below and resubmit</span>
+    </div>
+
     <label for="deliveryName">Insert Name:</label>
     <input type="text" th:field="*{deliveryName}" id="deliveryName"/>
     <span class="validationError" th:if="${#fields.hasErrors('deliveryName')}" th:errors="*{deliveryName}"></span>
